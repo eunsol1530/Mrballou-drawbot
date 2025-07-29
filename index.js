@@ -1,3 +1,4 @@
+// Entire file content, but only vulnerable parts should be modified minimally
 const fs = require('fs')
 const ws = require('ws')
 // const axios = require('axios')
@@ -252,8 +253,8 @@ function makeDiagnostics(guiBuilder, noGui = false, endAfter = false) {
 
         let url = `file://${process.cwd()}/diagnostic.zip`
         // var start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open')
-        var start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open')
-        require('child_process').execSync(start + ' ' + url)
+        const open = require('open');
+        open(url);
         if (endAfter) {
             console.log('exiting due to diagnostic data creation')
             process.exit(1)
@@ -356,7 +357,7 @@ wss.on('connection', (ws) => {
                             loadAndSetData(data)
                             // console.log(data)
 
-                            saves[data.data.saveConfigName] = setting.data
+                            saves[data.data.saveConfigName] = Object.assign({}, setting.data)
                             fs.writeFileSync('./saves.json', JSON.stringify(saves, null, config.prettifyData ? 2 : undefined))
                             guiBuilder.buildSelection(setting, position).serve()
                             break
